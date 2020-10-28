@@ -18,6 +18,13 @@
         <small>{{ $book->genere }}</small>
         <small>{{ $book->pages }}</small>
     </div>
+
+<form action="{{route('books.destroy',$book->id)}}" method="post">
+    @method('DELETE')
+    @csrf
+    <input type="submit" value="Cancella">
+</form>
+
 </body>
 
 </html>
