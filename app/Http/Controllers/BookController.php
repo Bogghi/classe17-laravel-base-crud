@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Book;
 
 class BookController extends Controller
@@ -38,7 +39,22 @@ class BookController extends Controller
     {
         // dd($request->all());
         $data = $request->all();
+
+        // dd($data);
+
+        $request->validate([
+            'title' => 'required|max:30',
+            'author' => 'required|max:50',
+            'pages' => 'required|integer',
+            'edition' => 'required|max:50',
+            'year' => 'required|date',
+            'isbn' => 'required|unique:books|max:13',
+            'genre' => 'required|max:30',
+            'image' => 'required'
+        ]);
         $book = new Book;
+
+
         $book->title = $data['title'];
         $book->author = $data['author'];
         $book->pages = $data['pages'];
@@ -47,9 +63,10 @@ class BookController extends Controller
         $book->isbn = $data['isbn'];
         $book->genre = $data['genre'];
         $book->image = $data['image'];
+
         $book->save();
         
-        dd($book);
+        return redirect()->route('books.show',$book);
     }
 
     /**
@@ -60,7 +77,8 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        //
+        $book = Book::find($id);
+        return view('show', ['book'=>$book]);
     }
 
     /**
@@ -71,7 +89,9 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        //
+        $book = Book::find($id);
+        // dd($book);
+        return view("update",["book"=>$book]);
     }
 
     /**
@@ -83,7 +103,40 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+
+        // dd($data);
+
+        $request->validate([
+            'title' => 'required|max:30',
+            'author' => 'required|max:50',
+            'pages' => 'required|integer',
+            'edition' => 'required|max:50',
+            'year' => 'required|date',
+            'isbn' => [
+                'required',
+                'max:13',
+                Rule::unique('books')->ignore($id)
+            ],
+            'genre' => 'required|max:30',
+            'image' => 'required'
+        ]);
+
+        $book = Book::find($id);
+
+
+        $book->title = $data['title'];
+        $book->author = $data['author'];
+        $book->pages = $data['pages'];
+        $book->edition = $data['edition'];
+        $book->year = $data['year'];
+        $book->isbn = $data['isbn'];
+        $book->genre = $data['genre'];
+        $book->image = $data['image'];
+
+        $book->update();
+        
+        return redirect()->route('books.show',$book);
     }
 
     /**

@@ -11,9 +11,12 @@
   @foreach($books as $book)
   <div>
     <h2>{{ $book->title }}</h2>
+    <img src="{{ $book->image }}" alt="">
     <h3>{{ $book->author }}</h3>
     <small>{{ $book->edition }}</small>
-    <img src="{{ $book->image }}" alt="">
+    <small>{{$book->year}}</small>
+    <small>{{$book->isbn}}</small>
+    <small>{{$book->genere}}</small>
   </div>
   @endforeach
 </body>
